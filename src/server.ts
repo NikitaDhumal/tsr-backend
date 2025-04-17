@@ -25,6 +25,6 @@ pool
   .then(() => console.log("✅ Connected to PostgreSQL"))
   .catch((err: any) => console.error("❌ DB connection error", err));
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
