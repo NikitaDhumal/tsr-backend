@@ -1,16 +1,16 @@
-import express, { Application } from "express";
-import cors from "cors";
 import bodyParser from "body-parser";
+import cors from "cors";
 import dotenv from "dotenv";
+import express from "express";
 
+import { pool } from "./models/db";
 import authRoutes from "./routes/auth";
 import seatRoutes from "./routes/seats";
-import { pool } from "./models/db";
 
 dotenv.config();
 
-const app: Application = express();
-const PORT: number = parseInt(process.env.PORT || "5000", 10);
+const app = express();
+const PORT = parseInt(process.env.PORT || "5000", 10);
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -23,7 +23,7 @@ app.use("/api/seats", seatRoutes);
 pool
   .connect()
   .then(() => console.log("✅ Connected to PostgreSQL"))
-  .catch((err: any) => console.error("❌ DB connection error", err));
+  .catch((err) => console.error("❌ DB connection error", err));
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);

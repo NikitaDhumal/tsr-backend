@@ -1,13 +1,7 @@
 import { Request, Response } from "express";
 import { pool } from "../models/db";
 
-export interface AuthenticatedRequest extends Request {
-  user?: { id: number; email: string };
-}
-export const getSeats = async (
-  req: AuthenticatedRequest,
-  res: Response
-): Promise<void> => {
+export const getSeats = async () => {
   try {
     const result = await pool.query("SELECT * FROM seats ORDER BY id");
     res.json(result.rows);
@@ -16,10 +10,7 @@ export const getSeats = async (
   }
 };
 
-export const bookSeats = async (
-  req: AuthenticatedRequest,
-  res: Response
-): Promise<void> => {
+export const bookSeats = async () => {
   const { user } = req;
   const { seats } = req.body;
 
@@ -53,10 +44,7 @@ export const bookSeats = async (
     return;
   }
 };
-export const resetSeats = async (
-  req: AuthenticatedRequest,
-  res: Response
-): Promise<void> => {
+export const resetSeats = async () => {
   try {
     await pool.query("UPDATE seats SET booked_by = NULL");
     res.status(200).json({ message: "All bookings have been reset." });

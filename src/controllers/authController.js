@@ -3,10 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { pool } from "../models/db";
 
-export const registerUser = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const registerUser = async () => {
   const { name, email, password } = req.body;
 
   try {
@@ -34,7 +31,7 @@ export const registerUser = async (
   }
 };
 
-export const loginUser = async (req: Request, res: Response): Promise<void> => {
+export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -55,7 +52,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 
     const token = jwt.sign(
       { id: user.rows[0].id, email: user.rows[0].email },
-      process.env.JWT_SECRET as string,
+      process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
