@@ -1,22 +1,21 @@
-import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
 
-export const authenticateToken = () => {
+const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    res.status(401).json({ message: "Token missing" });
-    return;
+    return res.status(401).json({ message: "Token missing" });
   }
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
-      res.status(403).json({ message: "Token invalid" });
-      return;
+      return res.status(403).json({ message: "Token invalid" });
     }
 
     req.user = user;
     next();
   });
 };
+
+module.exports = { authenticateToken };

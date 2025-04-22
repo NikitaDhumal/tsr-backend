@@ -1,9 +1,8 @@
-import { Request, Response } from "express";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { pool } from "../models/db";
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { pool } = require("../models/db");
 
-export const registerUser = async () => {
+const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
@@ -13,8 +12,7 @@ export const registerUser = async () => {
     );
 
     if (userExists.rows.length > 0) {
-      res.status(400).json({ message: "User already exists" });
-      return;
+      return res.status(400).json({ message: "User already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -31,7 +29,7 @@ export const registerUser = async () => {
   }
 };
 
-export const loginUser = async (req, res) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -40,14 +38,12 @@ export const loginUser = async (req, res) => {
     ]);
 
     if (user.rows.length === 0) {
-      res.status(400).json({ message: "Invalid credentials" });
-      return;
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const isMatch = await bcrypt.compare(password, user.rows[0].password);
     if (!isMatch) {
-      res.status(400).json({ message: "Invalid credentials" });
-      return;
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const token = jwt.sign(
@@ -61,4 +57,9 @@ export const loginUser = async (req, res) => {
     console.error("Error in loginUser:", error);
     res.status(500).json({ message: "Server error" });
   }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
 };

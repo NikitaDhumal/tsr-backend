@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "db:setup": "node src/models/setupDB.js"
+    "db:setup": "node src/models/setupDB.js",
+     "build": "echo \"No build step required for Node.js backend\""
   },
   "keywords": [],
   "author": "",

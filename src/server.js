@@ -1,11 +1,11 @@
-import bodyParser from "body-parser";
-import cors from "cors";
-import dotenv from "dotenv";
-import express from "express";
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const express = require("express");
 
-import { pool } from "./models/db";
-import authRoutes from "./routes/auth";
-import seatRoutes from "./routes/seats";
+const { pool } = require("./models/db");
+const authRoutes = require("./routes/auth");
+const seatRoutes = require("./routes/seats");
 
 dotenv.config();
 
@@ -16,7 +16,6 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use("/api/auth", authRoutes);
-app.use("/api/seats", seatRoutes);
 app.use("/api/seats", seatRoutes);
 
 // Test DB connection

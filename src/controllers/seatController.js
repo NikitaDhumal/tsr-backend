@@ -1,22 +1,23 @@
-import { Request, Response } from "express";
-import { pool } from "../models/db";
+const { pool } = require("../models/db");
 
-export const getSeats = async () => {
+const getSeats = async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM seats ORDER BY id");
     res.json(result.rows);
   } catch (error) {
+    console.error("Error fetching seats:", error);
     res.status(500).json({ message: "Failed to fetch seats" });
   }
 };
 
-export const bookSeats = async () => {
+const bookSeats = async (req, res) => {
   const { user } = req;
   const { seats } = req.body;
 
   if (!Array.isArray(seats) || seats.length < 1 || seats.length > 7) {
-    res.status(400).json({ message: "You can book between 1 to 7 seats." });
-    return;
+    return res
+      .status(400)
+      .json({ message: "You can book between 1 to 7 seats." });
   }
 
   try {
@@ -26,8 +27,9 @@ export const bookSeats = async () => {
     );
 
     if (result.rows.length !== seats.length) {
-      res.status(400).json({ message: "Some seats are already booked." });
-      return;
+      return res
+        .status(400)
+        .json({ message: "Some seats are already booked." });
     }
 
     for (let id of seats) {
@@ -38,13 +40,13 @@ export const bookSeats = async () => {
     }
 
     res.status(200).json({ message: "Seats booked successfully", seats });
-    return;
   } catch (error) {
+    console.error("Booking failed:", error);
     res.status(500).json({ message: "Booking failed" });
-    return;
   }
 };
-export const resetSeats = async () => {
+
+const resetSeats = async (req, res) => {
   try {
     await pool.query("UPDATE seats SET booked_by = NULL");
     res.status(200).json({ message: "All bookings have been reset." });
@@ -52,4 +54,10 @@ export const resetSeats = async () => {
     console.error("Reset failed:", error);
     res.status(500).json({ message: "Failed to reset bookings." });
   }
+};
+
+module.exports = {
+  getSeats,
+  bookSeats,
+  resetSeats,
 };
